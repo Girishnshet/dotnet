@@ -22,4 +22,11 @@ jobs:
     - name: Build
       run: dotnet build --configuration Release --no-restore
     - name: Test
-      run: dotnet test --no-restore --verbosity normal 
+      run: dotnet test --no-restore --verbosity normal /home/runner/work/dotnet/dotnet
+    - name: Upload artifact
+      uses: actions/upload-artifact@v1.0.0
+      with:
+    # Artifact name
+        name: drop
+    # Directory containing files to upload
+        path: /home/runner/work/dotnet/dotnet
