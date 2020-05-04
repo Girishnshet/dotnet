@@ -1,32 +1,29 @@
-name: .NET Core
+name: Build code and deploy to Azure
 
-on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+on: [push]
 
 jobs:
   build:
-
+    name: Build Code
     runs-on: ubuntu-latest
-
+    
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v1
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 3.1.101
-    - name: Install dependencies
-      run: dotnet restore
-    - name: Build
-      run: dotnet build --configuration Release --no-restore
-    - name: Test
-      run: dotnet test --no-restore --verbosity normal /home/runner/work/dotnet/dotnet
-    - name: Upload artifact
-      uses: actions/upload-artifact@v1.0.0
-      with:
-    # Artifact name
-        name: drop
-    # Directory containing files to upload
-        path: /home/runner/work/dotnet/dotnet
+        dotnet-version: 2.2.108
+    - name: Build with dotnet
+      run: dotnet build --configuration Release
+
+  deploy:
+    needs: build
+    name: Deploy App
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: deploy to azure web app
+      uses: azure/appservice-actions/webapp@master
+      with: 
+        app-name: githubpul
+        publish-profile: ${{ secrets. webapp }} 
